@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {%load static%}
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Team Page</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body style="background: url('{%static 'bg.jpg' %}') no-repeat center center fixed;">
+    <div class="container mt-3" style="color: #fff;">
+        
+        {%if message%}
+        <alert class="alert-danger">
+            {{message}}
+        </alert>
+        {%endif%}
+        <div class="row">
+            <div class="col-6">
+                
+                <h2>{{team.name}}</h2>
+                <h4>{{team.country}}</h4>
+            </div>
+            <div class="col-2">
+                <h5><a href="{%url 'transfer_list' %}" style="color: #fff;">View Transfer List</a></h5>
+            </div>
+            <div class="col-4 text-right">
+                <h3><sup><small>In the Bank (Budget) </small></sup>{{team.in_the_bank}}</h3>
+                <h3><sup><small>Team Value </small></sup>{{team.team_value}}</h3>
+            </div>
+            <div class="col-12">
+                <div class="row">
+                {%for p in team.players%}
+                <div class="col-4 my-2">
+                    <div class="py-2" style="background-color: rgba(0,0,0,0.5); border-radius: 5px;">
+                    <div class="row">
+                        <div class="col-auto px-0 text-center">
+                            <img src="{%static 'player.png' %}" style="height: 120px;">
+                        </div>
+                        <div class="col">
+                            {%if not p.in_transfer%}
+                                <button class="btn btn-outline-light btn-sm py-1" style="position: absolute; right: 22px;" onclick="transfer_button_click('{{p.id}}');">Transfer
+                                </button>
+                            {%endif%}
+                            ID: <strong>{{p.id}}</strong><br>
+                            <b>{{p.last_name}}, </b>{{p.first_name}}<br>
+                            $ {{p.market_value}}<br>
+                            {{p.player_position}}, {{p.country}}<br>
+                            Age: {{p.age}}
+                        </div>
+                    </div>
+                    
+                    {%if p.in_transfer%}
+                    <img src="{%static 'transfer.png' %}" style="height: 25px; position: absolute; bottom: 15px; right: 30px;">
+                    {%endif%}
+                    </div>
+                </div>
+                {%endfor%}
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="modal fade" id="tranfer_player_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Tranfer Player</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST">
+                    {%csrf_token%}
+                    <div class="row">
+                        <div class="col">
+                            <input type="number" name="asking-price" class="form-control" placeholder="Asking Price in Dollars ($)">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" id="transfer-btn" name="transfer-btn" class="btn btn-primary">Transfer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script type="text/javascript">
+        function transfer_button_click(id){
+            $('#transfer-btn').val(id);
+            $('#tranfer_player_modal').modal('show');
+        }
+      </script>
+</body>
+</html>
