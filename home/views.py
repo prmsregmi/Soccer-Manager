@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 import requests
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import login as auth_login, authenticate, logout as auth_logout
+from django.contrib.auth.decorators import login_required
 
 def get_url(request):
     return request.scheme + "://" + request.get_host()
@@ -38,6 +39,7 @@ def team_page(request):
 
     return render(request, "team_page.html", context)
 
+
 def transfer_list(request):
     try:
         token = Token.objects.get_or_create(user=request.user)[0].key
@@ -64,3 +66,8 @@ def transfer_list(request):
             context['message'] = r.content.decode("utf-8")
 
     return render(request, "transfer_list.html", context)
+
+def views_logout(request):
+    auth_logout(request)
+    return redirect("/swagger/")
+    
